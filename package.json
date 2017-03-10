@@ -1,0 +1,23 @@
+{
+  "name": "vulnerable-site",
+  "version": "1.0.0",
+  "description": "Vulnerable website",
+  "main": "server.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avitack/vulnerable-website.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Avitack/vulnerable-website/issues"
+  },
+  "homepage": "https://github.com/Avitack/vulnerable-website#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "express3-handlebars": "^0.5.2"
+  }
+}
