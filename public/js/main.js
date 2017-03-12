@@ -1,3 +1,3 @@
-$(function() {
-    $("#includedNavbar").load("/html/navbar.html");
-});
+// $(function() {
+//     $("#includedNavbar").load("/html/navbar.html");
+// });
