@@ -1,14 +1,19 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var credentials = require('./credentials.js');
 var hash = require('pbkdf2-password')();
 var session = require('express-session');
 var mongoose = require('mongoose');
 
+var credentials = require('./credentials.js');
+var PostModel = require('./models/post.js');
+var TestModel = require('./models/testModel.js');
+
 var app = express();
 
-// database
+// DATABASE
+// connect to local mongodb
 mongoose.connect('mongodb://localhost/vulnerable-site');
+//
 
 // set up handlebars view engine
 var handlebars = require('express3-handlebars').create({
@@ -105,7 +110,11 @@ app.get('/', function(req, res) {
 });
 
 app.get('/home', function(req, res) {
-    res.render('home');
+    PostModel.find({}, function(err, posts) {
+        res.render('home', {
+            posts: posts
+        });
+    });
 });
 
 app.get('/login', function(req, res) {
@@ -141,11 +150,47 @@ app.post('/login_processing', function(req, res) {
 });
 
 app.get('/post', function(req, res) {
-    res.render('post');
+    var pid = req.query.pid;
+    pid = mongoose.Types.ObjectId(pid);
+    PostModel.findOne({ '_id': pid }, function(err, post) {
+        if (err) {
+          console.error(err.stack);
+        }
+        res.render('post', {
+            post: post
+        });
+    });
 });
 
 app.get('/new_post', restrict, function(req, res) {
     res.render('new_post');
+});
+
+app.post('/new_post', function(req, res) {
+    var post = new PostModel({
+        pid: 1,
+        title: req.body.title,
+        content: req.body.content,
+        author: req.session.user.name,
+        score: 50,
+    });
+    post.save(function(err) {
+        if (err) {
+            console.error(err.stack);
+            req.session.flash = {
+                type: 'danger',
+                intro: 'Error!',
+                message: 'There was an error processing your request',
+            };
+            return res.redirect(303, '/new_post');
+        }
+        req.session.flash = {
+            type: 'success',
+            intro: 'Post created!',
+            message: '',
+        };
+        return res.redirect(303, '/home');
+    })
 });
 
 app.get('/logout', function(req, res) {
