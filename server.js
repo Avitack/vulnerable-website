@@ -3,8 +3,12 @@ var bodyParser = require('body-parser');
 var credentials = require('./credentials.js');
 var hash = require('pbkdf2-password')();
 var session = require('express-session');
+var mongoose = require('mongoose');
 
 var app = express();
+
+// database
+mongoose.connect('mongodb://localhost/vulnerable-site');
 
 // set up handlebars view engine
 var handlebars = require('express3-handlebars').create({
